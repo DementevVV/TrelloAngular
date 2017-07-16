@@ -1,0 +1,95 @@
+<html ng-app="trello">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TrelloClone</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  </head>
+  <body ng-cloak>
+    <md-toolbar class="md-hue-2">
+      <div class="md-toolbar-tools">
+        <h2 class="md-flex">TrelloAppClone</h2>
+        <md-input-container class="md-flex md-accent" 
+                            md-no-float style="padding-left: 50px"
+                            ng-controller="listsCtrl as listsCtrl">
+          <form ng-submit="listsCtrl.addList()">
+            <input  ng-model="listsCtrl.listName"
+                    placeholder="Add new list"
+                    id="newlist"
+                    style="margin-top: 25px; color: #E8EAF6;">
+          </form>
+        </md-input-container>
+      </div>
+    </md-toolbar>
+    <md-content class="md-padding" ng-controller="listsCtrl as listsCtrl">
+      <div layout="row">
+        <div flex-xs flex-gt-xs="50" ng-repeat="list in listsCtrl.lists">
+          <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">{{list.listName}}</span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content ng-controller="listCtrl as listCtrl">
+              <md-input-container class="md-accent md-block">
+                <form ng-submit="listCtrl.createCard(list)">
+                  <input ng-model="listCtrl.cardDescription"
+                         placeholder="New Card">
+                </form>
+              </md-input-container>
+              <md-card  md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}"
+                      md-theme-watch
+                      ng-controller="cardCtrl as cardCtrl" 
+                      ng-repeat="card in listCtrl.getCards(list)">
+              <md-card-content>
+                <p ng-if="!cardCtrl.isEditing">{{card.description}}</p>
+                <div ng-if="cardCtrl.isEditing">
+                  <md-input-container class="md-block md-accent">
+                    <form ng-submit="cardCtrl.updateCard()">
+                      <input  close-editing
+                              is-editing="cardCtrl.isEditing"
+                              ng-model="cardCtrl.editingCard.description"
+                              placeholder="Editing">
+                    </form>
+                  </md-input-container>
+                  <md-select  ng-model="cardCtrl.editingCard.list_id"
+                              class="md-no-underline"
+                              ng-change="cardCtrl.updateCard()">
+                    <md-option ng-repeat="list in listsCtrl.lists" ng-value="list.id">
+                      {{list.listName}}
+                    </md-option>
+                  </md-select>
+                </div>
+              </md-card-content>
+              <md-card-actions layout="row" layout-align="center" >
+                <md-button class="md-primary" ng-click="cardCtrl.editCard(card)">Edit Card</md-button>
+                <md-button class="md-accent" ng-click="cardCtrl.deleteCard(card)">Delete Card</md-button>
+              </md-card-actions>
+            </md-card>
+            </md-card-content>
+            <md-card-actions layout="column"
+                             layout-align="start" 
+                             ng-controller="listCtrl as listCtrl">
+              <md-button class="md-raised md-accent" ng-click="listCtrl.removeList(list)">Delete List</md-button>
+            </md-card-actions>
+          </md-card>
+        </div>
+      </div>
+    </md-content>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/controllers/listsCtrl.js"></script>
+    <script src="js/controllers/listCtrl.js"></script>
+    <script src="js/controllers/cardCtrl.js"></script>
+    <script src="js/factories/listFactory.js"></script>
+    <script src="js/factories/cardFactory.js"></script>
+    <script src="js/directives/closeEditing.js"></script>
+  </body>
+</html>

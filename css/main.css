@@ -1,0 +1,6 @@
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none;
+}
+#newlist::-webkit-input-placeholder{
+    color: #E8EAF6;
+}
